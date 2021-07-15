@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
 import {
   TextInput,
@@ -6,6 +7,8 @@ import {
   KeyboardAvoidingView,
   View,
   Text,
+  Alert,
+  Switch,
 } from 'react-native';
 
 import JitsiMeet, {JitsiMeetView} from 'react-native-jitsi-meet';
@@ -14,6 +17,7 @@ function App() {
   const [userName, setUserName] = useState('');
   const [callLink, setCallLink] = useState('');
   const [callStarted, setCallStarted] = useState(false);
+  const [isVideoEnabled, setIsVideoEnabled] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -21,6 +25,9 @@ function App() {
       JitsiMeet.endCall();
     };
   });
+
+  const toggleSwitch = () =>
+    setIsVideoEnabled((previousState) => !previousState);
 
   const onConferenceTerminated = (nativeEvent) => {
     /* Conference terminated event */
@@ -49,8 +56,14 @@ function App() {
           email: 'user@example.com',
           avatar: 'https:/gravatar.com/avatar/abc123',
         };
-        JitsiMeet.call(url, userInfo);
-      }, 2000);
+        if (isVideoEnabled) {
+          JitsiMeet.call(url, userInfo);
+        } else {
+          JitsiMeet.audioCall(url);
+        }
+      }, 1000);
+    } else {
+      Alert.alert('Make sure to enter your name and call-link!');
     }
   };
 
@@ -70,6 +83,21 @@ function App() {
           value={callLink}
           placeholder="Enter call link"
         />
+        <View
+          style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+          <Switch
+            trackColor={{false: '#767577', true: '#81b0ff'}}
+            thumbColor={isVideoEnabled ? '#f5dd4b' : '#f4f3f4'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch}
+            value={isVideoEnabled}
+            style={{
+              alignSelf: 'flex-start',
+              marginLeft: 10,
+            }}
+          />
+          <Text style={styles.text}>Join with your video</Text>
+        </View>
         <View style={styles.buttonWrapper}>
           <Button title="Start Call" onPress={startCall} />
         </View>
