@@ -34,6 +34,7 @@ function App() {
     console.log('onConferenceTerminated: ', {nativeEvent});
     setCallLink('');
     setCallStarted(false);
+    setIsVideoEnabled(false);
   };
 
   const onConferenceJoined = (nativeEvent) => {
@@ -87,7 +88,7 @@ function App() {
           style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
           <Switch
             trackColor={{false: '#767577', true: '#81b0ff'}}
-            thumbColor={isVideoEnabled ? '#f5dd4b' : '#f4f3f4'}
+            thumbColor={isVideoEnabled ? '#29d' : '#f4f3f4'}
             ios_backgroundColor="#3e3e3e"
             onValueChange={toggleSwitch}
             value={isVideoEnabled}
